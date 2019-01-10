@@ -104,36 +104,38 @@ public class UserActivity extends AppCompatActivity {
             @Override
             public void onResponse(retrofit2.Call<GitHubUser> call, Response<GitHubUser> response) {
 
-                ImageDownloader task = new ImageDownloader();
+                if (response.body() != null) {
+                    ImageDownloader task = new ImageDownloader();
 
-                try {
-                    userImage = task.execute(response.body().getAvatar()).get();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    try {
+                        userImage = task.execute(response.body().getAvatar()).get();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                    avatarImg.setImageBitmap(userImage);
+                    avatarImg.getLayoutParams().height = 220;
+                    avatarImg.getLayoutParams().width = 220;
+
+                    if (response.body().getUsername() == null) {
+                        userName.setText("No name provided");
+                    } else {
+                        userName.setText("Username: " + response.body().getUsername());
+                    }
+
+                    follower.setText("Followers: " + response.body().getFollower());
+                    following.setText("Following: " + response.body().getFollowing());
+                    login.setText("LogIn: " + response.body().getLogin());
+
+                    if (response.body().getEmail() == null) {
+                        email.setText("No email provided");
+                    } else {
+                        email.setText("Email: " + response.body().getEmail());
+                    }
+
                 }
-
-                avatarImg.setImageBitmap(userImage);
-                avatarImg.getLayoutParams().height = 220;
-                avatarImg.getLayoutParams().width = 220;
-
-                if (response.body().getUsername() == null) {
-                    userName.setText("No name provided");
-                } else {
-                    userName.setText("Username: " + response.body().getUsername());
-                }
-
-                follower.setText("Followers: " + response.body().getFollower());
-                following.setText("Following: " + response.body().getFollowing());
-                login.setText("LogIn: " + response.body().getLogin());
-
-                if (response.body().getEmail() == null) {
-                    email.setText("No email provided");
-                } else {
-                    email.setText("Email: " + response.body().getEmail());
-                }
-
             }
 
             @Override
